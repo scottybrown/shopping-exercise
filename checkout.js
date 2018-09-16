@@ -19,7 +19,7 @@ const isAppleTVSpecial = scannedItems => {
     appleTVCount = scannedItems
         .map(scannedItem => scannedItem.sku)
         .filter(scannedItemSku => scannedItemSku === skus.appleTV.sku).length;
-    return appleTVCount >= 3;
+    return appleTVCount % 3 === 0;
 };
 
 const scan = item => {
@@ -27,8 +27,10 @@ const scan = item => {
     total += item.price;
     scannedItems.push(item);
     const appleTVSpecialReached = isAppleTVSpecial(scannedItems);
+    const appleTVWasScanned = item.sku === skus.appleTV.sku;
     const needToApplyAppleTVSpecial =
-        !appleTVSpecialAlreadyApplied && appleTVSpecialReached;
+        appleTVSpecialReached && appleTVWasScanned;
+
     if (needToApplyAppleTVSpecial) {
         total = total - skus.appleTV.price;
     }

@@ -43,5 +43,22 @@ describe('can scan each type of item correctly', () => {
         expect(co.getTotal()).toBe(co.skus.vgaAdapter.price);
     });
 });
-// any order
-// todo handle missing items gracefully
+
+describe('can handle multiple specials', () => {
+    test('multiple apple TVs', () => {
+        co.scan(co.skus.appleTV);
+        expect(co.getTotal()).toBe(co.skus.appleTV.price);
+        co.scan(co.skus.appleTV);
+        expect(co.getTotal()).toBe(co.skus.appleTV.price * 2);
+        co.scan(co.skus.appleTV);
+        expect(co.getTotal()).toBe(co.skus.appleTV.price * 2);
+        co.scan(co.skus.appleTV);
+        expect(co.getTotal()).toBe(co.skus.appleTV.price * 3);
+        co.scan(co.skus.appleTV);
+        expect(co.getTotal()).toBe(co.skus.appleTV.price * 4);
+        co.scan(co.skus.appleTV);
+        expect(co.getTotal()).toBe(co.skus.appleTV.price * 4);
+        co.scan(co.skus.appleTV);
+        expect(co.getTotal()).toBe(co.skus.appleTV.price * 5);
+    });
+});
