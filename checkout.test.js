@@ -10,7 +10,7 @@ describe('example scenarios', () => {
         co.scan(co.skus.appleTV);
         co.scan(co.skus.appleTV);
         co.scan(co.skus.vgaAdapter);
-        // expect(co.getTotal()).toBe(249);
+        expect(co.getTotal()).toBe(249);
     });
 });
 
@@ -43,3 +43,5 @@ describe('can scan each type of item correctly', () => {
         expect(co.getTotal()).toBe(co.skus.vgaAdapter.price);
     });
 });
+// any order
+// todo handle missing items gracefully

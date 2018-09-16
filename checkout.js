@@ -1,4 +1,10 @@
-let total = 0;
+let total, scannedItems;
+
+const reset = () => {
+    total = 0;
+    scannedItems = [];
+};
+reset();
 
 const skus = {
     superIpad: {sku: 'ipd', name: 'Super iPad', price: 549.99},
@@ -7,10 +13,25 @@ const skus = {
     vgaAdapter: {sku: 'vga', name: 'VGA adapter', price: 30.0},
 };
 
-const scan = item => (total += item.price);
-
 const getTotal = () => total;
 
-const reset = () => (total = 0);
+const isAppleTVSpecial = scannedItems => {
+    appleTVCount = scannedItems
+        .map(scannedItem => scannedItem.sku)
+        .filter(scannedItemSku => scannedItemSku === skus.appleTV.sku).length;
+    return appleTVCount >= 3;
+};
+
+const scan = item => {
+    const appleTVSpecialAlreadyApplied = isAppleTVSpecial(scannedItems);
+    total += item.price;
+    scannedItems.push(item);
+    const appleTVSpecialReached = isAppleTVSpecial(scannedItems);
+    const needToApplyAppleTVSpecial =
+        !appleTVSpecialAlreadyApplied && appleTVSpecialReached;
+    if (needToApplyAppleTVSpecial) {
+        total = total - skus.appleTV.price;
+    }
+};
 
 module.exports = {skus, scan, getTotal, reset};
