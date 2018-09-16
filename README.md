@@ -16,7 +16,7 @@ yarn
 Tests:
 
 ```
-yarn jest
+yarn jest --watch
 ```
 
 ## TODOs
@@ -26,6 +26,6 @@ yarn jest
 -   implement checkout as a class, as required
 -   make sure tests cover nulls, undefined, etc
 -   unit/integ tests
--   how are you _supposed_ to import in jest?
 -   cover and test for large/floating point values/errors
 -   sensible eslint defaults
+-   measure coverage

@@ -11,4 +11,6 @@ const scan = item => (total += item.price);
 
 const getTotal = () => total;
 
-module.exports = {skus, scan, getTotal};
+const reset = () => (total = 0);
+
+module.exports = {skus, scan, getTotal, reset};
