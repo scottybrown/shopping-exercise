@@ -9,13 +9,14 @@ const skus = {
     superIpad: {sku: 'ipd', name: 'Super iPad', price: 549.99},
     macbookPro: {sku: 'mpb', name: 'MacBook Pro', price: 1399.99},
     appleTV: {sku: 'atv', name: 'Apple TV', price: 109.5},
-    vgaAdapter: {sku: 'vga', name: 'VGA adapter', price: 30.0},
+    vgaAdapter: {sku: 'vga', name: 'VGA adapter', price: 30},
 };
 
 const getTotal = () => {
     return applySpecials();
 };
 // todo test getting total makes no changes
+// todo items should be in files too.
 const amountOfAppleTVSpecials = scannedItems => {
     count = scannedItems
         .map(scannedItem => scannedItem.sku)
@@ -31,7 +32,7 @@ const superIpadDiscountReached = scannedItems => {
 };
 
 const scan = item => {
-    scannedItems.push(item);
+    scannedItems.push({...item});
 };
 
 const applySpecials = () => {
@@ -48,8 +49,20 @@ const applySpecials = () => {
         .reduce((total, price) => total + price, 0);
 
     const freeTvs = amountOfAppleTVSpecials(itemsWithSpecialsApplied);
-
     total = total - freeTvs * skus.appleTV.price;
+
+    // todo cover having more adpaters than books, vice versa
+    const booksScanned = itemsWithSpecialsApplied.filter(
+        item => item.sku === skus.macbookPro.sku,
+    ).length;
+    const adaptersScanned = itemsWithSpecialsApplied.filter(
+        item => item.sku === skus.vgaAdapter.sku,
+    ).length;
+    const freeAdapters =
+        booksScanned > adaptersScanned ? adaptersScanned : booksScanned;
+
+    total = total - freeAdapters * skus.vgaAdapter.price;
+
     return total;
 };
 

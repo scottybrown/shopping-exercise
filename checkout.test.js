@@ -23,6 +23,13 @@ describe('example scenarios', () => {
         co.scan(co.skus.superIpad);
         expect(co.getTotal()).toBe(2718.95);
     });
+
+    test('example scenario 3', () => {
+        co.scan(co.skus.macbookPro);
+        co.scan(co.skus.vgaAdapter);
+        co.scan(co.skus.superIpad);
+        expect(co.getTotal()).toBe(1949.98);
+    });
 });
 
 test('begins with zero total', () => expect(co.getTotal()).toBe(0));
