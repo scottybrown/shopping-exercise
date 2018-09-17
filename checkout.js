@@ -12,11 +12,12 @@ const skus = {
     vgaAdapter: {sku: 'vga', name: 'VGA adapter', price: 30},
 };
 
+const roundDollars = total => parseFloat(total.toFixed(2));
+
 const getTotal = () => {
-    return applySpecials();
+    return roundDollars(applySpecials());
 };
-// todo test getting total makes no changes
-// todo items should be in files too.
+
 const amountOfAppleTVSpecials = scannedItems => {
     count = scannedItems
         .map(scannedItem => scannedItem.sku)
@@ -51,7 +52,6 @@ const applySpecials = () => {
     const freeTvs = amountOfAppleTVSpecials(itemsWithSpecialsApplied);
     total = total - freeTvs * skus.appleTV.price;
 
-    // todo cover having more adpaters than books, vice versa
     const booksScanned = itemsWithSpecialsApplied.filter(
         item => item.sku === skus.macbookPro.sku,
     ).length;
@@ -66,4 +66,4 @@ const applySpecials = () => {
     return total;
 };
 
-module.exports = {skus, scan, getTotal, reset};
+module.exports = {skus, scan, getTotal, reset, roundDollars};

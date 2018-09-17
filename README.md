@@ -34,3 +34,4 @@ yarn jest --watch
 -   do reset in the constructor when i've got one
 -   handle missing items gracefully
 -   can scan in any order - cover that with a test case
+-   as well as specials, items should be taken from file
