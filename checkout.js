@@ -1,7 +1,6 @@
-let total, scannedItems;
+let scannedItems;
 
 const reset = () => {
-    total = 0;
     scannedItems = [];
 };
 reset();
@@ -13,27 +12,45 @@ const skus = {
     vgaAdapter: {sku: 'vga', name: 'VGA adapter', price: 30.0},
 };
 
-const getTotal = () => total;
-
-const isAppleTVSpecial = scannedItems => {
-    appleTVCount = scannedItems
+const getTotal = () => {
+    return applySpecials();
+};
+// todo test getting total makes no changes
+const amountOfAppleTVSpecials = scannedItems => {
+    count = scannedItems
         .map(scannedItem => scannedItem.sku)
         .filter(scannedItemSku => scannedItemSku === skus.appleTV.sku).length;
-    return appleTVCount % 3 === 0;
+    return parseInt(count / 3);
+};
+
+const superIpadDiscountReached = scannedItems => {
+    count = scannedItems
+        .map(scannedItem => scannedItem.sku)
+        .filter(scannedItemSku => scannedItemSku === skus.superIpad.sku).length;
+    return count > 4;
 };
 
 const scan = item => {
-    const appleTVSpecialAlreadyApplied = isAppleTVSpecial(scannedItems);
-    total += item.price;
     scannedItems.push(item);
-    const appleTVSpecialReached = isAppleTVSpecial(scannedItems);
-    const appleTVWasScanned = item.sku === skus.appleTV.sku;
-    const needToApplyAppleTVSpecial =
-        appleTVSpecialReached && appleTVWasScanned;
+};
 
-    if (needToApplyAppleTVSpecial) {
-        total = total - skus.appleTV.price;
+const applySpecials = () => {
+    let itemsWithSpecialsApplied = scannedItems.slice();
+
+    if (superIpadDiscountReached(itemsWithSpecialsApplied)) {
+        itemsWithSpecialsApplied
+            .filter(item => item.sku === skus.superIpad.sku)
+            .forEach(item => (item.price = 499.99));
     }
+
+    let total = itemsWithSpecialsApplied
+        .map(item => item.price)
+        .reduce((total, price) => total + price, 0);
+
+    const freeTvs = amountOfAppleTVSpecials(itemsWithSpecialsApplied);
+
+    total = total - freeTvs * skus.appleTV.price;
+    return total;
 };
 
 module.exports = {skus, scan, getTotal, reset};

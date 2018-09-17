@@ -12,6 +12,17 @@ describe('example scenarios', () => {
         co.scan(co.skus.vgaAdapter);
         expect(co.getTotal()).toBe(249);
     });
+
+    test('example scenario 2', () => {
+        co.scan(co.skus.appleTV);
+        co.scan(co.skus.superIpad);
+        co.scan(co.skus.superIpad);
+        co.scan(co.skus.appleTV);
+        co.scan(co.skus.superIpad);
+        co.scan(co.skus.superIpad);
+        co.scan(co.skus.superIpad);
+        expect(co.getTotal()).toBe(2718.95);
+    });
 });
 
 test('begins with zero total', () => expect(co.getTotal()).toBe(0));
