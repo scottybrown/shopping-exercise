@@ -33,7 +33,9 @@ const superIpadDiscountReached = scannedItems => {
 };
 
 const scan = item => {
-    scannedItems.push({...item});
+    if (item) {
+        scannedItems.push({...item});
+    }
 };
 
 const applySpecials = () => {

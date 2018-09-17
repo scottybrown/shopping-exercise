@@ -32,11 +32,31 @@ describe('example scenarios', () => {
     });
 });
 
-test('begins with zero total', () => expect(co.getTotal()).toBe(0));
+describe('implicit functionality', () => {
+    test('begins with zero total', () => expect(co.getTotal()).toBe(0));
 
-test('rounds floating point errors to 2 decimal places', () => {
-    expect(co.roundDollars(10.899)).toBe(10.9);
-    expect(co.roundDollars(10.001)).toBe(10);
+    test('rounds floating point errors to 2 decimal places', () => {
+        expect(co.roundDollars(10.899)).toBe(10.9);
+        expect(co.roundDollars(10.001)).toBe(10);
+    });
+
+    test('gracefully handles bad scan', () => {
+        co.scan(undefined);
+        expect(co.getTotal()).toBe(0);
+        co.scan(null);
+        expect(co.getTotal()).toBe(0);
+
+        co.scan(co.skus.superIpad);
+        expect(co.getTotal()).toBe(co.skus.superIpad.price);
+    });
+
+    test('handles very large dollar values', () => {
+        const testItem = {sku: 'tst', name: 'Test Item', price: 3147483647.12};
+        co.scan(testItem);
+        expect(co.getTotal()).toBe(testItem.price);
+        co.scan(testItem);
+        expect(co.getTotal()).toBe(6294967294.24);
+    });
 });
 
 test('sums items that are scanned', () => {
