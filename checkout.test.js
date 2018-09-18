@@ -60,12 +60,12 @@ describe('implicit functionality', () => {
         co.scan(testItem);
         expect(co.getTotal()).toBe(6294967294.24);
     });
-});
 
-test('sums items that are scanned', () => {
-    co.scan(skus.appleTV);
-    co.scan(skus.appleTV);
-    expect(co.getTotal()).toBe(skus.appleTV.price * 2);
+    test('sums items that are scanned', () => {
+        co.scan(skus.appleTV);
+        co.scan(skus.appleTV);
+        expect(co.getTotal()).toBe(skus.appleTV.price * 2);
+    });
 });
 
 describe('can scan each type of item correctly', () => {
