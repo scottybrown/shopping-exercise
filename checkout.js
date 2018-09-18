@@ -9,7 +9,7 @@ class Checkout {
     }
 
     getTotal() {
-        return this.roundDollars(this.applySpecials());
+        return this.roundDollars(this.applyPricingRules(this.scannedItems, this.pricingRules));
     }
 
     scan(item) {
@@ -22,34 +22,34 @@ class Checkout {
         return items.map(item => item.price).reduce((total, price) => total + price, 0);
     }
 
-    applySpecials() {
-        let itemsWithSpecialsApplied = this.scannedItems.slice();
+    applyPricingRules(scannedItems, pricingRules) {
+        let itemsWithPricingRulesApplied = scannedItems.slice();
 
-        for (const specialKey in this.pricingRules) {
-            const special = this.pricingRules[specialKey];
+        for (const key in pricingRules) {
+            const special = pricingRules[key];
             if (special.appliedIfMoreThan !== undefined) {
-                const conditionalProductsScanned = itemsWithSpecialsApplied.filter(item => item.sku === special.conditionalProduct).length;
+                const conditionalProductsScanned = itemsWithPricingRulesApplied.filter(item => item.sku === special.conditionalProduct).length;
 
                 if (conditionalProductsScanned > special.appliedIfMoreThan) {
-                    const productsToModify = itemsWithSpecialsApplied.filter(item => item.sku === special.modifiedProduct);
+                    const productsToModify = itemsWithPricingRulesApplied.filter(item => item.sku === special.modifiedProduct);
                     productsToModify.forEach(item => (item.price = 499.99));
                 }
             }
 
             if (special.appliedForEvery !== undefined) {
-                const conditionalProductsScanned = itemsWithSpecialsApplied.filter(item => item.sku === special.conditionalProduct).length;
+                const conditionalProductsScanned = itemsWithPricingRulesApplied.filter(item => item.sku === special.conditionalProduct).length;
                 let maxAmountOfDiscountsToApply = parseInt(conditionalProductsScanned / special.appliedForEvery);
-                const discountableProductsScanned = itemsWithSpecialsApplied.filter(item => item.sku === special.modifiedProduct).length;
+                const discountableProductsScanned = itemsWithPricingRulesApplied.filter(item => item.sku === special.modifiedProduct).length;
                 maxAmountOfDiscountsToApply =
                     maxAmountOfDiscountsToApply > discountableProductsScanned ? discountableProductsScanned : maxAmountOfDiscountsToApply;
-                const productsToModify = itemsWithSpecialsApplied.filter(item => item.sku === special.modifiedProduct);
+                const productsToModify = itemsWithPricingRulesApplied.filter(item => item.sku === special.modifiedProduct);
                 for (let i = 0; i < maxAmountOfDiscountsToApply; i++) {
                     productsToModify[i].price = special.modifiedPrice;
                 }
             }
         }
 
-        return this.sumItemPrices(itemsWithSpecialsApplied);
+        return this.sumItemPrices(itemsWithPricingRulesApplied);
     }
 }
 
