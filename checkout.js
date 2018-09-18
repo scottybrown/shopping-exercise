@@ -1,12 +1,7 @@
 class Checkout {
-    constructor() {
+    constructor(pricingRules) {
         this.scannedItems = [];
-        this.skus = {
-            superIpad: {sku: 'ipd', name: 'Super iPad', price: 549.99},
-            macbookPro: {sku: 'mpb', name: 'MacBook Pro', price: 1399.99},
-            appleTV: {sku: 'atv', name: 'Apple TV', price: 109.5},
-            vgaAdapter: {sku: 'vga', name: 'VGA adapter', price: 30},
-        };
+        this.pricingRules = pricingRules;
     }
 
     roundDollars(total) {
@@ -17,57 +12,44 @@ class Checkout {
         return this.roundDollars(this.applySpecials());
     }
 
-    amountOfAppleTVSpecials(scannedItems) {
-        const count = scannedItems
-            .map(scannedItem => scannedItem.sku)
-            .filter(scannedItemSku => scannedItemSku === this.skus.appleTV.sku)
-            .length;
-        return parseInt(count / 3);
-    }
-
-    superIpadDiscountReached(scannedItems) {
-        const count = scannedItems
-            .map(scannedItem => scannedItem.sku)
-            .filter(
-                scannedItemSku => scannedItemSku === this.skus.superIpad.sku,
-            ).length;
-        return count > 4;
-    }
-
     scan(item) {
         if (item) {
-            this.scannedItems.push({...item});
+            this.scannedItems.push(Object.assign({}, item));
         }
+    }
+
+    sumItemPrices(items) {
+        return items.map(item => item.price).reduce((total, price) => total + price, 0);
     }
 
     applySpecials() {
         let itemsWithSpecialsApplied = this.scannedItems.slice();
-        // todo function to  apply each special. then distill into generic special types
-        if (this.superIpadDiscountReached(itemsWithSpecialsApplied)) {
-            itemsWithSpecialsApplied
-                .filter(item => item.sku === this.skus.superIpad.sku)
-                .forEach(item => (item.price = 499.99));
+
+        for (const specialKey in this.pricingRules) {
+            const special = this.pricingRules[specialKey];
+            if (special.appliedIfMoreThan !== undefined) {
+                const conditionalProductsScanned = itemsWithSpecialsApplied.filter(item => item.sku === special.conditionalProduct).length;
+
+                if (conditionalProductsScanned > special.appliedIfMoreThan) {
+                    const productsToModify = itemsWithSpecialsApplied.filter(item => item.sku === special.modifiedProduct);
+                    productsToModify.forEach(item => (item.price = 499.99));
+                }
+            }
+
+            if (special.appliedForEvery !== undefined) {
+                const conditionalProductsScanned = itemsWithSpecialsApplied.filter(item => item.sku === special.conditionalProduct).length;
+                let maxAmountOfDiscountsToApply = parseInt(conditionalProductsScanned / special.appliedForEvery);
+                const discountableProductsScanned = itemsWithSpecialsApplied.filter(item => item.sku === special.modifiedProduct).length;
+                maxAmountOfDiscountsToApply =
+                    maxAmountOfDiscountsToApply > discountableProductsScanned ? discountableProductsScanned : maxAmountOfDiscountsToApply;
+                const productsToModify = itemsWithSpecialsApplied.filter(item => item.sku === special.modifiedProduct);
+                for (let i = 0; i < maxAmountOfDiscountsToApply; i++) {
+                    productsToModify[i].price = special.modifiedPrice;
+                }
+            }
         }
 
-        let total = itemsWithSpecialsApplied
-            .map(item => item.price)
-            .reduce((total, price) => total + price, 0);
-
-        const freeTvs = this.amountOfAppleTVSpecials(itemsWithSpecialsApplied);
-        total = total - freeTvs * this.skus.appleTV.price;
-
-        const booksScanned = itemsWithSpecialsApplied.filter(
-            item => item.sku === this.skus.macbookPro.sku,
-        ).length;
-        const adaptersScanned = itemsWithSpecialsApplied.filter(
-            item => item.sku === this.skus.vgaAdapter.sku,
-        ).length;
-        const freeAdapters =
-            booksScanned > adaptersScanned ? adaptersScanned : booksScanned;
-
-        total = total - freeAdapters * this.skus.vgaAdapter.price;
-
-        return total;
+        return this.sumItemPrices(itemsWithSpecialsApplied);
     }
 }
 

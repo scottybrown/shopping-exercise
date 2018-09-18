@@ -21,8 +21,7 @@ yarn jest --watch
 
 ## TODOs
 
--   move SKU constants out of checkout.js
--   implement checkout as a class, as required
+-   implement pricing rules passed into checkout as required
 -   sensible eslint defaults
 -   measure coverage
 -   make sure a _user_ not a developer can add/remove specials

@@ -1,34 +1,36 @@
 const Checkout = require('./checkout.js');
+const skus = require('./skus.json');
+const pricingRules = require('./pricingRules.json');
 
 let co;
 beforeEach(() => {
-    co = new Checkout();
+    co = new Checkout(pricingRules);
 });
 
 describe('example scenarios', () => {
     test('example scenario 1', () => {
-        co.scan(co.skus.appleTV);
-        co.scan(co.skus.appleTV);
-        co.scan(co.skus.appleTV);
-        co.scan(co.skus.vgaAdapter);
+        co.scan(skus.appleTV);
+        co.scan(skus.appleTV);
+        co.scan(skus.appleTV);
+        co.scan(skus.vgaAdapter);
         expect(co.getTotal()).toBe(249);
     });
 
     test('example scenario 2', () => {
-        co.scan(co.skus.appleTV);
-        co.scan(co.skus.superIpad);
-        co.scan(co.skus.superIpad);
-        co.scan(co.skus.appleTV);
-        co.scan(co.skus.superIpad);
-        co.scan(co.skus.superIpad);
-        co.scan(co.skus.superIpad);
+        co.scan(skus.appleTV);
+        co.scan(skus.superIpad);
+        co.scan(skus.superIpad);
+        co.scan(skus.appleTV);
+        co.scan(skus.superIpad);
+        co.scan(skus.superIpad);
+        co.scan(skus.superIpad);
         expect(co.getTotal()).toBe(2718.95);
     });
 
     test('example scenario 3', () => {
-        co.scan(co.skus.macbookPro);
-        co.scan(co.skus.vgaAdapter);
-        co.scan(co.skus.superIpad);
+        co.scan(skus.macbookPro);
+        co.scan(skus.vgaAdapter);
+        co.scan(skus.superIpad);
         expect(co.getTotal()).toBe(1949.98);
     });
 });
@@ -47,8 +49,8 @@ describe('implicit functionality', () => {
         co.scan(null);
         expect(co.getTotal()).toBe(0);
 
-        co.scan(co.skus.superIpad);
-        expect(co.getTotal()).toBe(co.skus.superIpad.price);
+        co.scan(skus.superIpad);
+        expect(co.getTotal()).toBe(skus.superIpad.price);
     });
 
     test('handles very large dollar values', () => {
@@ -61,98 +63,92 @@ describe('implicit functionality', () => {
 });
 
 test('sums items that are scanned', () => {
-    co.scan(co.skus.appleTV);
-    co.scan(co.skus.appleTV);
-    expect(co.getTotal()).toBe(co.skus.appleTV.price * 2);
+    co.scan(skus.appleTV);
+    co.scan(skus.appleTV);
+    expect(co.getTotal()).toBe(skus.appleTV.price * 2);
 });
 
 describe('can scan each type of item correctly', () => {
     test('can scan superIpad', () => {
-        co.scan(co.skus.superIpad);
-        expect(co.getTotal()).toBe(co.skus.superIpad.price);
+        co.scan(skus.superIpad);
+        expect(co.getTotal()).toBe(skus.superIpad.price);
     });
 
     test('can scan appleTV', () => {
-        co.scan(co.skus.appleTV);
-        expect(co.getTotal()).toBe(co.skus.appleTV.price);
+        co.scan(skus.appleTV);
+        expect(co.getTotal()).toBe(skus.appleTV.price);
     });
 
     test('can scan macbookPro', () => {
-        co.scan(co.skus.macbookPro);
-        expect(co.getTotal()).toBe(co.skus.macbookPro.price);
+        co.scan(skus.macbookPro);
+        expect(co.getTotal()).toBe(skus.macbookPro.price);
     });
 
     test('can scan vgaAdapter', () => {
-        co.scan(co.skus.vgaAdapter);
-        expect(co.getTotal()).toBe(co.skus.vgaAdapter.price);
+        co.scan(skus.vgaAdapter);
+        expect(co.getTotal()).toBe(skus.vgaAdapter.price);
     });
 });
 
 describe('can handle multiple specials', () => {
     test('multiple apple TVs', () => {
-        co.scan(co.skus.appleTV);
-        expect(co.getTotal()).toBe(co.skus.appleTV.price);
-        co.scan(co.skus.appleTV);
-        expect(co.getTotal()).toBe(co.skus.appleTV.price * 2);
-        co.scan(co.skus.appleTV);
-        expect(co.getTotal()).toBe(co.skus.appleTV.price * 2);
-        co.scan(co.skus.appleTV);
-        expect(co.getTotal()).toBe(co.skus.appleTV.price * 3);
-        co.scan(co.skus.appleTV);
-        expect(co.getTotal()).toBe(co.skus.appleTV.price * 4);
-        co.scan(co.skus.appleTV);
-        expect(co.getTotal()).toBe(co.skus.appleTV.price * 4);
-        co.scan(co.skus.appleTV);
-        expect(co.getTotal()).toBe(co.skus.appleTV.price * 5);
+        co.scan(skus.appleTV);
+        expect(co.getTotal()).toBe(skus.appleTV.price);
+        co.scan(skus.appleTV);
+        expect(co.getTotal()).toBe(skus.appleTV.price * 2);
+        co.scan(skus.appleTV);
+        expect(co.getTotal()).toBe(skus.appleTV.price * 2);
+        co.scan(skus.appleTV);
+        expect(co.getTotal()).toBe(skus.appleTV.price * 3);
+        co.scan(skus.appleTV);
+        expect(co.getTotal()).toBe(skus.appleTV.price * 4);
+        co.scan(skus.appleTV);
+        expect(co.getTotal()).toBe(skus.appleTV.price * 4);
+        co.scan(skus.appleTV);
+        expect(co.getTotal()).toBe(skus.appleTV.price * 5);
     });
 
     test('multiple super ipads', () => {
-        co.scan(co.skus.superIpad);
-        expect(co.getTotal()).toBe(co.skus.superIpad.price);
-        co.scan(co.skus.superIpad);
-        expect(co.getTotal()).toBe(co.skus.superIpad.price * 2);
-        co.scan(co.skus.superIpad);
-        expect(co.getTotal()).toBe(co.skus.superIpad.price * 3);
-        co.scan(co.skus.superIpad);
-        expect(co.getTotal()).toBe(co.skus.superIpad.price * 4);
-        co.scan(co.skus.superIpad);
+        co.scan(skus.superIpad);
+        expect(co.getTotal()).toBe(skus.superIpad.price);
+        co.scan(skus.superIpad);
+        expect(co.getTotal()).toBe(skus.superIpad.price * 2);
+        co.scan(skus.superIpad);
+        expect(co.getTotal()).toBe(skus.superIpad.price * 3);
+        co.scan(skus.superIpad);
+        expect(co.getTotal()).toBe(skus.superIpad.price * 4);
+        co.scan(skus.superIpad);
         expect(co.getTotal()).toBe(499.99 * 5);
-        co.scan(co.skus.superIpad);
+        co.scan(skus.superIpad);
         expect(co.getTotal()).toBe(499.99 * 6);
     });
 
     test('multiple macbooks/adapters', () => {
-        co.scan(co.skus.macbookPro);
-        co.scan(co.skus.macbookPro);
-        co.scan(co.skus.macbookPro);
-        co.scan(co.skus.macbookPro);
-        co.scan(co.skus.macbookPro);
-        expect(co.getTotal()).toBe(co.skus.macbookPro.price * 5);
+        co.scan(skus.macbookPro);
+        co.scan(skus.macbookPro);
+        co.scan(skus.macbookPro);
+        co.scan(skus.macbookPro);
+        co.scan(skus.macbookPro);
+        expect(co.getTotal()).toBe(skus.macbookPro.price * 5);
 
-        co.scan(co.skus.vgaAdapter);
-        co.scan(co.skus.vgaAdapter);
-        co.scan(co.skus.vgaAdapter);
-        co.scan(co.skus.vgaAdapter);
-        expect(co.getTotal()).toBe(co.skus.macbookPro.price * 5);
-        co.scan(co.skus.vgaAdapter);
-        expect(co.getTotal()).toBe(co.skus.macbookPro.price * 5);
+        co.scan(skus.vgaAdapter);
+        co.scan(skus.vgaAdapter);
+        co.scan(skus.vgaAdapter);
+        co.scan(skus.vgaAdapter);
+        expect(co.getTotal()).toBe(skus.macbookPro.price * 5);
+        co.scan(skus.vgaAdapter);
+        expect(co.getTotal()).toBe(skus.macbookPro.price * 5);
 
-        co.scan(co.skus.vgaAdapter);
-        expect(co.getTotal()).toBe(
-            co.skus.macbookPro.price * 5 + co.skus.vgaAdapter.price,
-        );
+        co.scan(skus.vgaAdapter);
+        expect(co.getTotal()).toBe(skus.macbookPro.price * 5 + skus.vgaAdapter.price);
 
-        co.scan(co.skus.vgaAdapter);
-        expect(co.getTotal()).toBe(
-            co.skus.macbookPro.price * 5 + co.skus.vgaAdapter.price * 2,
-        );
+        co.scan(skus.vgaAdapter);
+        expect(co.getTotal()).toBe(skus.macbookPro.price * 5 + skus.vgaAdapter.price * 2);
 
-        co.scan(co.skus.macbookPro);
-        expect(co.getTotal()).toBe(
-            co.skus.macbookPro.price * 6 + co.skus.vgaAdapter.price * 1,
-        );
+        co.scan(skus.macbookPro);
+        expect(co.getTotal()).toBe(skus.macbookPro.price * 6 + skus.vgaAdapter.price * 1);
 
-        co.scan(co.skus.macbookPro);
-        expect(co.getTotal()).toBe(co.skus.macbookPro.price * 7);
+        co.scan(skus.macbookPro);
+        expect(co.getTotal()).toBe(skus.macbookPro.price * 7);
     });
 });

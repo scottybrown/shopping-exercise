@@ -1,0 +1,20 @@
+[
+    {
+        "conditionalProduct": "atv",
+        "appliedForEvery": 3,
+        "modifiedProduct": "atv",
+        "modifiedPrice": 0
+    },
+    {
+        "conditionalProduct": "ipd",
+        "appliedIfMoreThan": 4,
+        "modifiedProduct": "ipd",
+        "modifiedPrice": 499.99
+    },
+    {
+        "conditionalProduct": "mpb",
+        "appliedForEvery": 1,
+        "modifiedProduct": "vga",
+        "modifiedPrice": 0
+    }
+]
