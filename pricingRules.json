@@ -1,20 +1,20 @@
 [
     {
-        "conditionalProduct": "atv",
-        "appliedForEvery": 3,
-        "modifiedProduct": "atv",
-        "modifiedPrice": 0
+        "forProductSku": "atv",
+        "forEveryXSold": 3,
+        "modifyProduct": "atv",
+        "applyNewPriceOf": 0
     },
     {
-        "conditionalProduct": "ipd",
+        "forProductSku": "ipd",
         "appliedIfMoreThan": 4,
-        "modifiedProduct": "ipd",
-        "modifiedPrice": 499.99
+        "modifyProduct": "ipd",
+        "applyNewPriceOf": 499.99
     },
     {
-        "conditionalProduct": "mpb",
-        "appliedForEvery": 1,
-        "modifiedProduct": "vga",
-        "modifiedPrice": 0
+        "forProductSku": "mpb",
+        "forEveryXSold": 1,
+        "modifyProduct": "vga",
+        "applyNewPriceOf": 0
     }
 ]
