@@ -1,7 +1,8 @@
-const co = require('./checkout.js');
+const Checkout = require('./checkout.js');
 
+let co;
 beforeEach(() => {
-    co.reset();
+    co = new Checkout();
 });
 
 describe('example scenarios', () => {
