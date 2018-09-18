@@ -22,5 +22,4 @@ yarn jest --watch
 ## TODOs
 
 -   sensible eslint defaults
--   measure coverage
 -   any good checkout system needs the ability to unscan an item - though it's not in the requirements
