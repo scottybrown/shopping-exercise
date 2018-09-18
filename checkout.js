@@ -22,30 +22,40 @@ class Checkout {
         return items.map(item => item.price).reduce((total, price) => total + price, 0);
     }
 
+    applyDiscountForIfMoreThanXItems(pricingRule, itemsWithPricingRulesApplied) {
+        const conditionalProductsScanned = itemsWithPricingRulesApplied.filter(item => item.sku === pricingRule.conditionalProduct).length;
+
+        if (conditionalProductsScanned > pricingRule.appliedIfMoreThan) {
+            const productsToModify = itemsWithPricingRulesApplied.filter(item => item.sku === pricingRule.modifiedProduct);
+            productsToModify.forEach(item => (item.price = 499.99));
+        }
+    }
+
+    applyDiscountForEveryXItems(pricingRule, itemsWithPricingRulesApplied) {
+        const conditionalProductsScanned = itemsWithPricingRulesApplied.filter(item => item.sku === pricingRule.conditionalProduct).length;
+        let maxAmountOfDiscountsToApply = parseInt(conditionalProductsScanned / pricingRule.appliedForEvery);
+        const discountableProductsScanned = itemsWithPricingRulesApplied.filter(item => item.sku === pricingRule.modifiedProduct).length;
+        maxAmountOfDiscountsToApply = maxAmountOfDiscountsToApply > discountableProductsScanned ? discountableProductsScanned : maxAmountOfDiscountsToApply;
+        const productsToModify = itemsWithPricingRulesApplied.filter(item => item.sku === pricingRule.modifiedProduct);
+        for (let i = 0; i < maxAmountOfDiscountsToApply; i++) {
+            productsToModify[i].price = pricingRule.modifiedPrice;
+        }
+    }
+
     applyPricingRules(scannedItems, pricingRules) {
         let itemsWithPricingRulesApplied = scannedItems.slice();
 
-        for (const key in pricingRules) {
-            const special = pricingRules[key];
-            if (special.appliedIfMoreThan !== undefined) {
-                const conditionalProductsScanned = itemsWithPricingRulesApplied.filter(item => item.sku === special.conditionalProduct).length;
+        // and i may need some more test cases and pricing rules....
+        // and maybe some renaming to make it clearer what each does
 
-                if (conditionalProductsScanned > special.appliedIfMoreThan) {
-                    const productsToModify = itemsWithPricingRulesApplied.filter(item => item.sku === special.modifiedProduct);
-                    productsToModify.forEach(item => (item.price = 499.99));
-                }
+        for (const key in pricingRules) {
+            const pricingRule = pricingRules[key];
+            if (pricingRule.appliedIfMoreThan !== undefined) {
+                this.applyDiscountForIfMoreThanXItems(pricingRule, itemsWithPricingRulesApplied);
             }
 
-            if (special.appliedForEvery !== undefined) {
-                const conditionalProductsScanned = itemsWithPricingRulesApplied.filter(item => item.sku === special.conditionalProduct).length;
-                let maxAmountOfDiscountsToApply = parseInt(conditionalProductsScanned / special.appliedForEvery);
-                const discountableProductsScanned = itemsWithPricingRulesApplied.filter(item => item.sku === special.modifiedProduct).length;
-                maxAmountOfDiscountsToApply =
-                    maxAmountOfDiscountsToApply > discountableProductsScanned ? discountableProductsScanned : maxAmountOfDiscountsToApply;
-                const productsToModify = itemsWithPricingRulesApplied.filter(item => item.sku === special.modifiedProduct);
-                for (let i = 0; i < maxAmountOfDiscountsToApply; i++) {
-                    productsToModify[i].price = special.modifiedPrice;
-                }
+            if (pricingRule.appliedForEvery !== undefined) {
+                this.applyDiscountForEveryXItems(pricingRule, itemsWithPricingRulesApplied);
             }
         }
 
